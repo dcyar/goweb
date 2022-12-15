@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoWeb - Contact</title>
+    <style>
+        form {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        form div label {
+            font-weight: bold;
+        }
+
+        form div label,
+        form div input,
+        form div textarea {
+            display: block;
+            margin: 5px 0 3px;
+        }
+
+        form div input,
+        form div textarea {
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .alert {
+            width: 300px;
+            background-color: yellowgreen;
+            font-weight: 600;
+            padding: 10px;
+            margin: 15px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 5px;
+            width: 100%;
+            padding: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Send me a message :)</h1>
+
+    <form action="/contact" method="POST">
+        <fieldset>
+            <legend>Contact form</legend>
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" placeholder="Enter your name..." required />
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="text" name="email" id="email" placeholder="Enter your email..." required />
+            </div>
+            <div>
+                <label for="message">Message:</label>
+                <textarea name="message" id="message" required></textarea>
+            </div>
+            <button type="submit">Submit</button>
+        </fieldset>
+    </form>
+    <p><a href="/">Back to Home</a></p>
+</body>
+
+</html>
