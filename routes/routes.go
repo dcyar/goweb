@@ -5,6 +5,7 @@ func Routes() map[string]string {
 
 	routes["/"] = "/"
 	routes["/contact"] = "/contact"
+	routes["/ws"] = "/ws"
 
 	return routes
 }

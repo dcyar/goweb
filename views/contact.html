@@ -76,7 +76,7 @@
     <h1>Send me a message :)</h1>
 
     <section>
-        <form action="/contact" method="POST">
+        <form id="form" action="/contact" method="POST">
             <fieldset>
                 <legend>Contact form</legend>
                 <div>
@@ -96,18 +96,69 @@
 
             <p><a href="/">Back to Home</a></p>
         </form>
-        <div>
-            <div>
-                {{ range .Contacts }}
-                    <div class="contact">
-                        <h4>{{ .Name }}</h4> - <small>{{ .Email }}</small>
-                        <p>{{ .Message }}</p>
-                        <small>{{ .CreatedAt }}</small>
-                    </div>
-                {{ end }}
-            </div>
+        <div id="contacts">
+            {{ range .Contacts }}
+                <div class="contact">
+                    <h4>{{ .Name }}</h4> - <small>{{ .Email }}</small>
+                    <p>{{ .Message }}</p>
+                </div>
+            {{ end }}
         </div>
     </section>
+    <script>
+        window.addEventListener('load', (e) => {
+            const socket = new WebSocket('ws://localhost:3000/ws')
+            const contactsElement = document.querySelector('#contacts')
+
+            socket.onopen = () => {
+                console.log('connected')
+            }
+
+            socket.onmessage = (e) => {
+                const response = JSON.parse(e.data)
+                const newContactElement = document.createElement('div')
+                const titleContact = document.createElement('h4')
+                const emailContact = document.createElement('small')
+                const messageContact = document.createElement('p')
+
+                newContactElement.classList.add('contact')
+
+                titleContact.textContent = response.Name;
+                emailContact.textContent =  ' - ' + response.Email;
+                messageContact.textContent = response.Message;
+
+                newContactElement.append(titleContact)
+                newContactElement.append(emailContact)
+                newContactElement.append(messageContact)
+
+                contactsElement.insertBefore(newContactElement, contactsElement.firstChild)
+            }
+
+            socket.onclose = () => {
+                console.log('close socket')
+            }
+
+            socket.onerror = () => {
+                console.log('socket error')
+            }
+
+            const formElement = document.querySelector('#form')
+            formElement.addEventListener('submit', (e) => {
+                e.preventDefault()
+                formData = new FormData(e.target)
+
+                const data = {
+                    Name: formData.get('name'),
+                    Email: formData.get('email'),
+                    Message: formData.get('message'),
+                }
+
+                socket.send(JSON.stringify(data))
+
+                formElement.reset()
+            })
+        })
+    </script>
 </body>
 
 </html>

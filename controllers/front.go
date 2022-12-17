@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/dcyar/goweb/config"
+	"github.com/olahol/melody"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"html/template"
@@ -29,6 +31,7 @@ func Contact(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("./views/contact.html"))
 	client := config.DatabaseConnect()
 	defer config.DatabaseClose(client)
+
 	coll := client.Database(config.Database).Collection("contacts")
 
 	if r.Method != http.MethodPost {
@@ -47,22 +50,30 @@ func Contact(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+}
 
-	details := ContactDetails{
-		Name:      r.FormValue("name"),
-		Email:     r.FormValue("email"),
-		Message:   r.FormValue("message"),
-		CreatedAt: time.Now(),
-	}
+func HandleContactMessage(me *melody.Melody) {
+	me.HandleMessage(func(s *melody.Session, msg []byte) {
+		client := config.DatabaseConnect()
+		defer config.DatabaseClose(client)
 
-	newContact, err := coll.InsertOne(context.TODO(), details)
+		coll := client.Database(config.Database).Collection("contacts")
 
-	if err != nil {
-		panic(err)
-	}
+		tempCd := ContactDetails{}
+		err := json.Unmarshal(msg, &tempCd)
 
-	log.Printf("%+v", newContact)
+		if err != nil {
+			log.Println(err)
+		}
 
-	http.Redirect(w, r, "/contact", http.StatusSeeOther)
-	tmpl.Execute(w, struct{ Success bool }{true})
+		tempCd.CreatedAt = time.Now()
+
+		_, err = coll.InsertOne(context.TODO(), tempCd)
+
+		if err != nil {
+			panic(err)
+		}
+
+		me.Broadcast(msg)
+	})
 }
