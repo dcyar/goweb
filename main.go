@@ -1,12 +1,11 @@
 package main
 
 import (
+	c "github.com/dcyar/goweb/controllers"
+	m "github.com/dcyar/goweb/middleware"
 	"github.com/dcyar/goweb/routes"
 	"log"
 	"net/http"
-
-	c "github.com/dcyar/goweb/controllers"
-	m "github.com/dcyar/goweb/middleware"
 )
 
 const PORT string = ":3000"

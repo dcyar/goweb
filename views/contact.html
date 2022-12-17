@@ -7,10 +7,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoWeb - Contact</title>
     <style>
-        form {
+        section {
+            display: flex;
+        }
+
+        section > form, section > div {
+            width: 50%;
+        }
+
+        form fieldset {
             width: 300px;
             display: flex;
             flex-direction: column;
+        }
+
+        form div {
+            width: 100%;
         }
 
         form div label {
@@ -20,7 +32,6 @@
         form div label,
         form div input,
         form div textarea {
-            display: block;
             margin: 5px 0 3px;
         }
 
@@ -47,31 +58,56 @@
             text-transform: uppercase;
             font-weight: 600;
         }
+
+        .contact {
+            border: 2px solid #ccc;
+            margin: 0 0 20px;
+            padding: 5px;
+        }
+
+        h4 {
+            display: inline-block;
+            margin: 0;
+        }
     </style>
 </head>
 
 <body>
     <h1>Send me a message :)</h1>
 
-    <form action="/contact" method="POST">
-        <fieldset>
-            <legend>Contact form</legend>
+    <section>
+        <form action="/contact" method="POST">
+            <fieldset>
+                <legend>Contact form</legend>
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" id="name" placeholder="Enter your name..." required />
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="text" name="email" id="email" placeholder="Enter your email..." required />
+                </div>
+                <div>
+                    <label for="message">Message:</label>
+                    <textarea name="message" id="message" required></textarea>
+                </div>
+                <button type="submit">Submit</button>
+            </fieldset>
+
+            <p><a href="/">Back to Home</a></p>
+        </form>
+        <div>
             <div>
-                <label for="name">Name:</label>
-                <input type="text" name="name" id="name" placeholder="Enter your name..." required />
+                {{ range .Contacts }}
+                    <div class="contact">
+                        <h4>{{ .Name }}</h4> - <small>{{ .Email }}</small>
+                        <p>{{ .Message }}</p>
+                        <small>{{ .CreatedAt }}</small>
+                    </div>
+                {{ end }}
             </div>
-            <div>
-                <label for="email">Email:</label>
-                <input type="text" name="email" id="email" placeholder="Enter your email..." required />
-            </div>
-            <div>
-                <label for="message">Message:</label>
-                <textarea name="message" id="message" required></textarea>
-            </div>
-            <button type="submit">Submit</button>
-        </fieldset>
-    </form>
-    <p><a href="/">Back to Home</a></p>
+        </div>
+    </section>
 </body>
 
 </html>
